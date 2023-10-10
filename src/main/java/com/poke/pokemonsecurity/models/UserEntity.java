@@ -1,6 +1,5 @@
 package com.poke.pokemonsecurity.models;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

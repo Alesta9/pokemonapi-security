@@ -1,6 +1,5 @@
 package com.poke.pokemonsecurity.dto;
 
-import com.poke.pokemonsecurity.dto.PokemonDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

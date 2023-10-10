@@ -2,7 +2,6 @@ package com.poke.pokemonsecurity.controller;
 
 
 import com.poke.pokemonsecurity.dto.ReviewDto;
-import com.poke.pokemonsecurity.models.Review;
 import com.poke.pokemonsecurity.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

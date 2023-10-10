@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collections;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -58,7 +59,7 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody RegisterDto registerDto) {
 
-        if(userRepository.existsByUsername(registerDto.getUsername())) {
+        if(userRepository.existsByUsername(registerDto.getUsername()) ) {
             return new ResponseEntity<>("username is already taken!", HttpStatus.BAD_REQUEST);
         }
 
@@ -66,8 +67,17 @@ public class AuthController {
         user.setUsername(registerDto.getUsername());
         user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
 
-        Role roles = roleRepository.findByName("USER").get();
-        user.setRoles(Collections.singletonList(roles));
+
+
+        Optional<Role> roleValue = roleRepository.findByName("USER");
+        if (roleValue.isPresent()) {
+
+            user.setRoles(Collections.singletonList(roleValue.get()));
+        }
+
+
+
+
 
         userRepository.save(user);
 

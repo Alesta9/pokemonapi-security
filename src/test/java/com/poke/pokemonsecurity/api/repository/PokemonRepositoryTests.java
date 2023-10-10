@@ -3,7 +3,6 @@ package com.poke.pokemonsecurity.api.repository;
 import com.poke.pokemonsecurity.models.Pokemon;
 import com.poke.pokemonsecurity.repository.PokemonRepository;
 import org.assertj.core.api.Assertions;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
@@ -15,14 +14,14 @@ import java.util.Optional;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2) // Embedded DB
-public class PokemonRepositoryTests {
+class PokemonRepositoryTests {
 
     @Autowired
     private PokemonRepository pokemonRepository;
 
-    @Test // Tests doesnt return anything so it has to be void
-    public void PokemonRepository_SaveAll_ReturnSavedPokemon(){
-
+    @Test
+    void PokemonRepository_SaveAll_ReturnSavedPokemon(){
+        // Tests doesn't return anything so it has to be void
         // Arrange
         Pokemon pokemon = Pokemon.builder()
                                  .name("Pikapika")
@@ -33,11 +32,11 @@ public class PokemonRepositoryTests {
 
         // Assert
         Assertions.assertThat(savedPokemon).isNotNull();
-        Assertions.assertThat(savedPokemon.getId()).isGreaterThan(0);
+        Assertions.assertThat(savedPokemon.getId()).isPositive();
     }
 
     @Test
-    public void PokemonRepository_FindAll_ReturnMoreThanOnePokemon() {
+    void PokemonRepository_FindAll_ReturnMoreThanOnePokemon() {
         // Arrange
         Pokemon pokemon = Pokemon.builder().name("pika").type("elec").build();
         Pokemon pokemon2 = Pokemon.builder().name("pika").type("elec").build();
@@ -46,11 +45,10 @@ public class PokemonRepositoryTests {
         pokemonRepository.save(pokemon2);
         List<Pokemon> pokemonList = pokemonRepository.findAll();
         // Assert
-        Assertions.assertThat(pokemonList).isNotNull();
-        Assertions.assertThat(pokemonList.size()).isEqualTo(2);
+        Assertions.assertThat(pokemonList).hasSize(2).isNotNull();
     }
     @Test
-    public void PokemonRepository_FindId_ReturnTheExistenceById() {
+    void PokemonRepository_FindId_ReturnTheExistenceById() {
         // Arrange
         Pokemon pokemon = Pokemon.builder().name("pikachu").type("electric").build();
         // Act
@@ -62,7 +60,7 @@ public class PokemonRepositoryTests {
     }
 
     @Test
-    public void PokemonRepository_FindByType_ReturnPokemonNotNull() {
+    void PokemonRepository_FindByType_ReturnPokemonNotNull() {
         // Arrange
         Pokemon pokemon = Pokemon.builder().name("pikachu").type("electric").build();
         // Act

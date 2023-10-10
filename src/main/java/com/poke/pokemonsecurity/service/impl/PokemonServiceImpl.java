@@ -10,9 +10,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.awt.print.Pageable;
+
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 @Service
 public class PokemonServiceImpl implements PokemonService {
@@ -29,7 +29,7 @@ public class PokemonServiceImpl implements PokemonService {
         //Pageable pageable = (Pageable) PageRequest.of(pageNo,pageSize); deprecated
         Page<Pokemon> pokemons = pokemonRepository.findAll(PageRequest.of(pageNo,pageSize));
         List<Pokemon> listOfPokemon = pokemons.getContent();
-        List<PokemonDto> content = listOfPokemon.stream().map(p -> mapToDto(p)).collect(Collectors.toList());
+        List<PokemonDto> content = listOfPokemon.stream().map(this::mapToDto).toList();
 
         PokemonResponse pokemonResponse = new PokemonResponse();
         pokemonResponse.setContent(content); // Returns the page content as List.
