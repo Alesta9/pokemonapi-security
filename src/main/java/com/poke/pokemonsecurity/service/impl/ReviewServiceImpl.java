@@ -1,6 +1,5 @@
 package com.poke.pokemonsecurity.service.impl;
 
-import com.poke.pokemonsecurity.dto.PokemonResponse;
 import com.poke.pokemonsecurity.dto.ReviewDto;
 import com.poke.pokemonsecurity.models.Pokemon;
 import com.poke.pokemonsecurity.models.Review;
@@ -11,14 +10,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 @Service
 public class ReviewServiceImpl implements ReviewService{
 
     private final ReviewRepository reviewRepository;
     private final PokemonRepository pokemonRepository;
-
+    private static final String EXCEPTION="review does not belong to this poki";
+    private static final String REVIEW_EXCEPTION = "pokemon with that review not found";
     @Autowired
     public ReviewServiceImpl(ReviewRepository reviewRepository, PokemonRepository pokemonRepository) {
         this.reviewRepository = reviewRepository;
@@ -30,19 +30,19 @@ public class ReviewServiceImpl implements ReviewService{
 
         List<Review> reviews = reviewRepository.findByPokemonId(id);
 
-        return reviews.stream().map(review -> mapToDto(review)).collect(Collectors.toList());
+        return reviews.stream().map(this::mapToDto).toList();
     }
 
     @Override
     public ReviewDto getReviewById(int pokemonId, int reviewId) {
 
         Pokemon pokemon = pokemonRepository.findById(pokemonId)
-                                           .orElseThrow(() -> new IllegalArgumentException("pokemon with that review not found"));
+                                           .orElseThrow(() -> new IllegalArgumentException(REVIEW_EXCEPTION));
         Review review = reviewRepository.findById(reviewId)
-                                        .orElseThrow(() -> new IllegalStateException("review with that pokemon not found"));
+                                        .orElseThrow(() -> new IllegalStateException(REVIEW_EXCEPTION));
 
         if(review.getPokemon().getId() != pokemon.getId()) {
-            throw new IllegalStateException("review does not belong to this poki");
+            throw new IllegalStateException(EXCEPTION);
         }
         return mapToDto(review);
 
@@ -54,7 +54,7 @@ public class ReviewServiceImpl implements ReviewService{
         Review review = mapToEntity(reviewDto);
 
         Pokemon pokemon = pokemonRepository.findById(pokemonId)
-                                           .orElseThrow(() -> new IllegalArgumentException("pokemon with that review not found"));
+                                           .orElseThrow(() -> new IllegalArgumentException(REVIEW_EXCEPTION));
 
         review.setPokemon(pokemon);
 
@@ -68,12 +68,12 @@ public class ReviewServiceImpl implements ReviewService{
     public ReviewDto updateReview(int pokemonId, int reviewId, ReviewDto reviewDto) {
 
         Pokemon pokemon = pokemonRepository.findById(pokemonId)
-                                           .orElseThrow(() -> new IllegalArgumentException("pokemon with that review not found"));
+                                           .orElseThrow(() -> new IllegalArgumentException(REVIEW_EXCEPTION));
         Review review = reviewRepository.findById(reviewId)
-                                        .orElseThrow(() -> new IllegalStateException("review with that pokemon not found"));
+                                        .orElseThrow(() -> new IllegalStateException(REVIEW_EXCEPTION));
 
         if(review.getPokemon().getId() != pokemon.getId()) {
-            throw new IllegalStateException("review does not belong to this poki");
+            throw new IllegalStateException(EXCEPTION);
         }
 
         review.setTitle(reviewDto.getTitle());
@@ -91,12 +91,12 @@ public class ReviewServiceImpl implements ReviewService{
     public void deleteReview(int pokemonId, int reviewId) {
 
         Pokemon pokemon = pokemonRepository.findById(pokemonId)
-                                           .orElseThrow(() -> new IllegalArgumentException("pokemon with that review not found"));
+                                           .orElseThrow(() -> new IllegalArgumentException(REVIEW_EXCEPTION));
         Review review = reviewRepository.findById(reviewId)
-                                        .orElseThrow(() -> new IllegalStateException("review with that pokemon not found"));
+                                        .orElseThrow(() -> new IllegalStateException(REVIEW_EXCEPTION));
 
         if(review.getPokemon().getId() != pokemon.getId()) {
-            throw new IllegalStateException("review does not belong to this poki");
+            throw new IllegalStateException(EXCEPTION);
         }
 
         reviewRepository.delete(review);
